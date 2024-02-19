@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using QRCoder;
 using QrGenerator.infrastructure;
+using QrGenerator.Services;
 using System;
 using System.Drawing;
 using System.Security.Policy;
@@ -19,6 +20,7 @@ namespace QrGenerator.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
+        private ImageSaver _imageSaver;
         private ImageSource _qrCodeImage;
 
         private ImageSource _qrCodeIcon;
@@ -141,11 +143,21 @@ namespace QrGenerator.ViewModels
             }
 
         }
+
+        public SimpleCommand DownLoadQrCode { get; }
+        private bool CanDownLoadQrCodeExecute() => true;
+
+        private void DownLoadQrCodeExecute()
+        {
+            _imageSaver.SaveImageToFile(QRCodeImage);
+        }
         public MainWindowViewModel() 
         {
             _qrGenerator = new QRCodeGenerator();
+            _imageSaver = new ImageSaver();
             GenerateQrCode = new RegularCommand(GenerateQrCodeExecute, CanGenerateQrCodeExecute);
             DownLoadIconCode = new SimpleCommand(DownLoadIconExecute, CanDownLoadIconExecute);
+            DownLoadQrCode = new SimpleCommand(DownLoadQrCodeExecute, CanDownLoadQrCodeExecute);
         }
     }
 }

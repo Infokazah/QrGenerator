@@ -19,7 +19,10 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Image Width="1000" Height="1000" Grid.Column="0" Grid.Row="0" Source="{Binding QRCodeImage}"/>
+        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+            <Image Width="1000" Height="1000"  Source="{Binding QRCodeImage}"/>
+        <Button  Width="200" Height="45" Content="Скачать QrCode" FontSize="24" Command="{Binding DownLoadQrCode}"/>
+        </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" >
             <StackPanel Orientation="Vertical" Margin="0 75 0 0" HorizontalAlignment="Center" Width="600">
                 <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" FontSize="24" TextAlignment="Center"/>

@@ -10,9 +10,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using WpfBaseLyb;
-using Brush = System.Drawing.Brush;
 using Color = System.Windows.Media.Color;
 
 
@@ -100,16 +98,18 @@ namespace QrGenerator.ViewModels
                 QRCode qrCode = new QRCode(qrCodeData);
                 Bitmap QRCodeBitMap = qrCode.GetGraphic(100, GlobalConverter.ConvertToDrawingColor(BackColor), GlobalConverter.ConvertToDrawingColor(FrontColor), true);
 
-
-                using (Graphics graphics = Graphics.FromImage(QRCodeBitMap))
+                if(QrCodeIcon != null) 
                 {
-                    Bitmap logo = new Bitmap(QrIconPath);
-                    int logoSizeX = QRCodeBitMap.Width / 6;
-                    int logoSizeY = QRCodeBitMap.Height / 6;
-                    int logoPositionX = (QRCodeBitMap.Width - logoSizeX) / 2;
-                    int logoPositionY = (QRCodeBitMap.Height - logoSizeY) / 2;
+                    using (Graphics graphics = Graphics.FromImage(QRCodeBitMap))
+                    {
+                        Bitmap logo = new Bitmap(QrIconPath);
+                        int logoSizeX = QRCodeBitMap.Width / 6;
+                        int logoSizeY = QRCodeBitMap.Height / 6;
+                        int logoPositionX = (QRCodeBitMap.Width - logoSizeX) / 2;
+                        int logoPositionY = (QRCodeBitMap.Height - logoSizeY) / 2;
 
-                    graphics.DrawImage(logo, new Rectangle(logoPositionX, logoPositionY, logoSizeX, logoSizeY));
+                        graphics.DrawImage(logo, new Rectangle(logoPositionX, logoPositionY, logoSizeX, logoSizeY));
+                    }
                 }
 
                 QRCodeImage = Imaging.CreateBitmapSourceFromHBitmap(QRCodeBitMap.GetHbitmap(),

@@ -25,7 +25,12 @@ namespace QrGenerator.Services
                     bitmapSource.DpiX, bitmapSource.DpiY,
                     PixelFormats.Pbgra32);
 
-                renderTargetBitmap.Render(new Image { Source = bitmapSource });
+                DrawingVisual drawingVisual = new DrawingVisual();
+                using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+                {
+                    drawingContext.DrawImage(bitmapSource, new Rect(0, 0, bitmapSource.Width, bitmapSource.Height));
+                }
+                renderTargetBitmap.Render(drawingVisual);
 
                 SaveImage(renderTargetBitmap);
             }
@@ -35,23 +40,21 @@ namespace QrGenerator.Services
             }
         }
 
+
         private void SaveImage(RenderTargetBitmap bitmap)
         {
-            string folderPath = "";
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                folderPath = dialog.FileName;
+                string folderPath = dialog.FileName;
                 try
                 {
                     string filePath = Path.Combine(folderPath, "QrCode.png");
                     encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                    using (FileStream fs = new FileStream(filePath, FileMode.Create))
-                    {
-                        encoder.Save(fs);
-                    }
+                    using FileStream fs = new(filePath, FileMode.Create);
+                    encoder.Save(fs);
                 }
                 catch (Exception ex)
                 {

@@ -7,7 +7,8 @@
         xmlns:vm="clr-namespace:QrGenerator.ViewModels"
         xmlns:xcees="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920">
+        Title="MainWindow" Height="1080" Width="1920"
+        WindowState="Maximized">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -19,8 +20,14 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <GridSplitter Background="Black" VerticalAlignment="Stretch" Grid.Column="0" Width="5"/>
         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
-            <Image Width="1000" Height="1000"  Source="{Binding QRCodeImage}"/>
+            <Border Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5">
+                <Border Background="White">
+                    <Image Width="900" Height="900"  Source="{Binding QRCodeImage}"/>
+                </Border>
+            </Border>
+            
         <Button  Width="200" Height="45" Content="Скачать QrCode" FontSize="24" Command="{Binding DownLoadQrCode}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" >
@@ -30,11 +37,16 @@
             </StackPanel>
             <xcees:ColorPicker Width="400" Height="40" SelectedColor="{Binding BackColor}" Margin="0 75 0 0"/>
             <xcees:ColorPicker Width="400" Height="40" SelectedColor="{Binding FrontColor}" Margin="0 10 0 0"/>
-            <Image Height="400" Width="400" Margin="0 75 0 10" Source="{Binding QrCodeIcon}"/>
+            <Border Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" Margin="0 75 0 0">
+                <Border Background="White" >
+                    <Image Height="400" Width="400"  Source="{Binding QrCodeIcon}"/>
+                </Border>
+            </Border>
             <Button Width="200"  Height="40" Command="{Binding DownLoadIconCode}" 
-            Content="Выбрать иконку" FontSize="24"/>
-            <Button Width="100"  Height="20" Command="{Binding GenerateQrCode}" 
-                    CommandParameter="{Binding ElementName=StringBox, Path=Text}" Content="Сгенерировать"/>
+            Content="Выбрать иконку" FontSize="24" Margin="0 25 0 0"/>
+            <Button Width="200"  Height="40" Command="{Binding GenerateQrCode}" Margin="0 50 0 0"
+                    CommandParameter="{Binding ElementName=StringBox, Path=Text}" 
+                    Content="Сгенерировать" FontSize="24"/>
         </StackPanel>
     </Grid>
 </Window>

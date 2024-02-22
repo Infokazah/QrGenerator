@@ -12,6 +12,52 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
+    <Window.Background>
+        <SolidColorBrush Color="#5CDB95"/>
+    </Window.Background>
+    <Window.Resources>
+        <SolidColorBrush Color="#379683" x:Key="GreenBrush"/>
+        <SolidColorBrush Color="#05386B" x:Key="BlueBrush"/>
+        <SolidColorBrush Color="#8EE4AF" x:Key="LightGreenBrush"/>
+        <SolidColorBrush Color="#EDF5E1" x:Key="TextBrush"/>
+        
+        <Style TargetType="Control" x:Key="ControllStandart">
+            <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        <Style TargetType="xcees:ColorPicker" x:Key="ColorPickerStyle">
+            <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
+            <Setter Property="HeaderBackground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="TabBackground" Value="{StaticResource LightGreenBrush}"/>
+            <Setter Property="DropDownBackground" Value="{StaticResource GreenBrush}"/>
+        </Style>
+        <Style TargetType="Border" x:Key="BlueBorder">
+            <Setter Property="Background" Value="{StaticResource BlueBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        <Style BasedOn="{StaticResource ControllStandart}" TargetType="Button"  >
+            <Style.Triggers>
+                <Trigger  Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightGreenBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border Background="{StaticResource GreenBrush}">
+                            </Border>
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -20,33 +66,38 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <GridSplitter Background="Black" VerticalAlignment="Stretch" Grid.Column="0" Width="5"/>
+        <GridSplitter Background="{StaticResource BlueBrush}" VerticalAlignment="Stretch" Grid.Column="0" Width="5"/>
         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
-            <Border Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5">
-                <Border Background="White">
+            <Border Style="{StaticResource BlueBorder}" Margin="0 20 0 20">
+                <Border Background="{StaticResource LightGreenBrush}">
                     <Image Width="900" Height="900"  Source="{Binding QRCodeImage}"/>
                 </Border>
             </Border>
-            
-        <Button  Width="200" Height="45" Content="Скачать QrCode" FontSize="24" Command="{Binding DownLoadQrCode}"/>
+            <Button  Width="200" Height="45" Content="Скачать QrCode" 
+                 Command="{Binding DownLoadQrCode}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" >
             <StackPanel Orientation="Vertical" Margin="0 75 0 0" HorizontalAlignment="Center" Width="600">
-                <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" FontSize="24" TextAlignment="Center"/>
-                <TextBox  Width="560" x:Name="StringBox" Height="50" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
+                <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" Background="#379683" 
+                           FontSize="24" TextAlignment="Center" Foreground="{StaticResource TextBrush}" />
+                <TextBox  Width="560" x:Name="StringBox" Style="{StaticResource ControllStandart}"
+                          Height="50" TextWrapping="Wrap" VerticalAlignment="Bottom" />
             </StackPanel>
-            <xcees:ColorPicker Width="400" Height="40" SelectedColor="{Binding BackColor}" Margin="0 75 0 0"/>
-            <xcees:ColorPicker Width="400" Height="40" SelectedColor="{Binding FrontColor}" Margin="0 10 0 0"/>
-            <Border Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" Margin="0 75 0 0">
-                <Border Background="White" >
+            <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
+                               SelectedColor="{Binding BackColor}" Margin="0 75 0 0"/>
+            <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
+                               SelectedColor="{Binding FrontColor}" Margin="0 10 0 0" />
+            <Border Style="{StaticResource BlueBorder}" Margin="0 75 0 0">
+                <Border Background="{StaticResource LightGreenBrush}" >
                     <Image Height="400" Width="400"  Source="{Binding QrCodeIcon}"/>
                 </Border>
             </Border>
-            <Button Width="200"  Height="40" Command="{Binding DownLoadIconCode}" 
-            Content="Выбрать иконку" FontSize="24" Margin="0 25 0 0"/>
-            <Button Width="200"  Height="40" Command="{Binding GenerateQrCode}" Margin="0 50 0 0"
-                    CommandParameter="{Binding ElementName=StringBox, Path=Text}" 
-                    Content="Сгенерировать" FontSize="24"/>
+            <Button Width="200"  Height="40" Command="{Binding DownLoadIconCode}"
+                    Content="Выбрать иконку" Margin="0 25 0 0" />
+            <Button Width="200"  Height="40" 
+                    Command="{Binding GenerateQrCode}" 
+                    Margin="0 50 0 0" Content="Сгенерировать"
+                    CommandParameter="{Binding ElementName=StringBox, Path=Text}" />
         </StackPanel>
     </Grid>
 </Window>

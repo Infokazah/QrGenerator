@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using QRCoder;
 using QrGenerator.infrastructure;
 using QrGenerator.Services;
+using QrGenerator.Services.infrastructures;
 using System;
 using System.Drawing;
 using System.Security.Policy;
@@ -151,10 +152,10 @@ namespace QrGenerator.ViewModels
         {
             _imageSaver.SaveImageToFile(QRCodeImage);
         }
-        public MainWindowViewModel() 
+        public MainWindowViewModel(IImageSaver imageSaver) 
         {
+            _imageSaver = (ImageSaver?)imageSaver;
             _qrGenerator = new QRCodeGenerator();
-            _imageSaver = new ImageSaver();
             GenerateQrCode = new RegularCommand(GenerateQrCodeExecute, CanGenerateQrCodeExecute);
             DownLoadIconCode = new SimpleCommand(DownLoadIconExecute, CanDownLoadIconExecute);
             DownLoadQrCode = new SimpleCommand(DownLoadQrCodeExecute, CanDownLoadQrCodeExecute);

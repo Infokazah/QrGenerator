@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QrGenerator"
         xmlns:vm="clr-namespace:QrGenerator.ViewModels"
-        xmlns:xcees="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:xcees="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
+        DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
         Title="MainWindow" Height="1080" Width="1920"
         WindowState="Maximized">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
+    
     <Window.Background>
         <SolidColorBrush Color="#5CDB95"/>
     </Window.Background>

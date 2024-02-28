@@ -5,10 +5,12 @@ using System.Windows.Media;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Drawing;
+using QrGenerator.Services.infrastructures;
 
 namespace QrGenerator.Services
 {
-    public class ImageSaver
+    public class ImageSaver : IImageSaver
     {
         private BitmapEncoder encoder;
 
@@ -32,34 +34,28 @@ namespace QrGenerator.Services
                 }
                 renderTargetBitmap.Render(drawingVisual);
 
-                SaveImage(renderTargetBitmap);
+                var dialog = new CommonOpenFileDialog();
+                dialog.IsFolderPicker = true;
+
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    string folderPath = dialog.FileName;
+                    try
+                    {
+                        string filePath = Path.Combine(folderPath, "QrCode.png");
+                        encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+                        using FileStream fs = new(filePath, FileMode.Create);
+                        encoder.Save(fs);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка сохранения изображения: {ex.Message}");
+                    }
+                }
             }
             else
             {
                 MessageBox.Show("Недопустимый источник изображения");
-            }
-        }
-
-
-        private void SaveImage(RenderTargetBitmap bitmap)
-        {
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                string folderPath = dialog.FileName;
-                try
-                {
-                    string filePath = Path.Combine(folderPath, "QrCode.png");
-                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                    using FileStream fs = new(filePath, FileMode.Create);
-                    encoder.Save(fs);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка сохранения изображения: {ex.Message}");
-                }
             }
         }
     }

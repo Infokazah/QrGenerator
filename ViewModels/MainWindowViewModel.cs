@@ -5,12 +5,8 @@ using QrGenerator.infrastructure;
 using QrGenerator.Services;
 using QrGenerator.Services.infrastructures;
 using System;
-using System.Drawing;
-using System.Security.Policy;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using WpfBaseLyb;
 using Color = System.Windows.Media.Color;
 
@@ -21,7 +17,7 @@ namespace QrGenerator.ViewModels
     {
         private ImageSaver _imageSaver;
         private ImageSource _qrCodeImage;
-
+        private QrCodeGeneratorService _qrCodeGeneratorService;
         private ImageSource _qrCodeIcon;
 
         public ImageSource QrCodeIcon
@@ -36,20 +32,6 @@ namespace QrGenerator.ViewModels
         }
 
         private string QrIconPath;
-
-        private int _qrSize;
-
-        public int QrSize
-        {
-            get => _qrSize;
-
-            set
-            {
-                _qrSize = value;
-                OnPropertyChanged(nameof(QrSize));
-            }
-
-        }
 
         private Color _backColor;
 
@@ -87,35 +69,12 @@ namespace QrGenerator.ViewModels
                 OnPropertyChanged(nameof(QRCodeImage));
             }
         }
-        private QRCodeGenerator _qrGenerator;
         public RegularCommand GenerateQrCode { get; }
         private bool CanGenerateQrCodeExecute(object p) => true;
 
         private void GenerateQrCodeExecute(object str)
         {
-            if (str is string stroke)
-            {
-                QRCodeData qrCodeData = _qrGenerator.CreateQrCode(stroke, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap QRCodeBitMap = qrCode.GetGraphic(100, GlobalConverter.ConvertToDrawingColor(BackColor), GlobalConverter.ConvertToDrawingColor(FrontColor), true);
-
-                if(QrCodeIcon != null) 
-                {
-                    using (Graphics graphics = Graphics.FromImage(QRCodeBitMap))
-                    {
-                        Bitmap logo = new Bitmap(QrIconPath);
-                        int logoSizeX = QRCodeBitMap.Width / 6;
-                        int logoSizeY = QRCodeBitMap.Height / 6;
-                        int logoPositionX = (QRCodeBitMap.Width - logoSizeX) / 2;
-                        int logoPositionY = (QRCodeBitMap.Height - logoSizeY) / 2;
-
-                        graphics.DrawImage(logo, new Rectangle(logoPositionX, logoPositionY, logoSizeX, logoSizeY));
-                    }
-                }
-
-                QRCodeImage = Imaging.CreateBitmapSourceFromHBitmap(QRCodeBitMap.GetHbitmap(),
-                        IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            }
+            QRCodeImage = _qrCodeGeneratorService.GenerateQrCodeUrl(str.ToString(), BackColor, FrontColor, QrIconPath);
         }
 
         public SimpleCommand DownLoadIconCode { get; }
@@ -152,10 +111,11 @@ namespace QrGenerator.ViewModels
         {
             _imageSaver.SaveImageToFile(QRCodeImage);
         }
-        public MainWindowViewModel(IImageSaver imageSaver) 
+        public MainWindowViewModel(IImageSaver imageSaver, IQrCodeGeneratorService qrCodeGeneratorService) 
         {
             _imageSaver = (ImageSaver?)imageSaver;
-            _qrGenerator = new QRCodeGenerator();
+            _qrCodeGeneratorService = (QrCodeGeneratorService?)qrCodeGeneratorService;
+
             GenerateQrCode = new RegularCommand(GenerateQrCodeExecute, CanGenerateQrCodeExecute);
             DownLoadIconCode = new SimpleCommand(DownLoadIconExecute, CanDownLoadIconExecute);
             DownLoadQrCode = new SimpleCommand(DownLoadQrCodeExecute, CanDownLoadQrCodeExecute);

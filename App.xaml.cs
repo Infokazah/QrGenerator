@@ -50,6 +50,7 @@ namespace QrGenerator
         {
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<IImageSaver, ImageSaver>();
+            services.AddSingleton<IQrCodeGeneratorService, QrCodeGeneratorService>();
         }
 
 #pragma warning disable CS8603 // Возможно, возврат ссылки, допускающей значение NULL.

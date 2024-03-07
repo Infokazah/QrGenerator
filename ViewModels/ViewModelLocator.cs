@@ -9,5 +9,6 @@ namespace QrGenerator.ViewModels
     {
         public MainWindowViewModel MainWindowViewModel => App.Host.Services.GetRequiredService<MainWindowViewModel>();
         public ImageSaver ImageSaver => App.Host.Services.GetRequiredService<ImageSaver>();
+        public QrCodeGeneratorService QrCodeGeneratorService => App.Host.Services.GetRequiredService<QrCodeGeneratorService>();
     }
 }

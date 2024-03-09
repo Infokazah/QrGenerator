@@ -12,8 +12,6 @@ namespace QrGenerator.Services.infrastructures
 {
     internal interface IQrCodeGeneratorService
     {
-       public ImageSource GenerateQrCodeUrl(string url, Color back, Color front, string? source);
-
-       public ImageSource GenerateQrCodeImage(string ImageUrl, Color back, Color front, string? source);
+       public ImageSource GenerateQrCodeUrl(string url, Color back, Color front, ImageSource? source);
     }
 }

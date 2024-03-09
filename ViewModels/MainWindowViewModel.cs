@@ -51,11 +51,9 @@ namespace QrGenerator.ViewModels
             set
             {
                 _imageToCode = value;
-                OnPropertyChanged(nameof(QrCodeIcon));
+                OnPropertyChanged(nameof(ImageToCode));
             }
         }
-
-        private string QrIconPath;
 
         private Color _backColor;
 
@@ -88,13 +86,21 @@ namespace QrGenerator.ViewModels
 
         private void GenerateQrCodeExecute(object str)
         {
-            QRCodeImage = _qrCodeGeneratorService.GenerateQrCodeUrl(str.ToString(), BackColor, FrontColor, QrIconPath);
+            QRCodeImage = _qrCodeGeneratorService.GenerateQrCodeUrl(str.ToString(), BackColor, FrontColor, QrCodeIcon);
         }
 
-        public SimpleCommand DownLoadIconCode { get; }
-        private bool CanDownLoadIconExecute() => true;
+        public SimpleCommand GenerateQrCodeImage { get; }
+        private bool CanGenerateQrCodeImageExecute() => true;
 
-        private void DownLoadIconExecute()
+        private void GenerateQrCodeImageExecute()
+        {
+            //QRCodeImage = _qrCodeGeneratorService.GenerateQrCodeImage(ImageToCode, BackColor, FrontColor, QrCodeIcon);
+        }
+
+        public RegularCommand DownLoadIconCode { get; }
+        private bool CanDownLoadIconExecute(object p) => true;
+
+        private void DownLoadIconExecute(object p)
         {
             try
             {
@@ -103,8 +109,10 @@ namespace QrGenerator.ViewModels
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string selectedFile = openFileDialog.FileName;
-                    QrCodeIcon = GlobalConverter.ConvertStringToImageSource(selectedFile);
-                    QrIconPath = openFileDialog.FileName;
+                    if(int.Parse(p.ToString())  == 0)    
+                        QrCodeIcon = GlobalConverter.ConvertStringToImageSource(selectedFile);
+                    else
+                        ImageToCode = GlobalConverter.ConvertStringToImageSource(selectedFile);
                 }
                 else
                 {
@@ -131,7 +139,8 @@ namespace QrGenerator.ViewModels
             _qrCodeGeneratorService = (QrCodeGeneratorService?)qrCodeGeneratorService;
 
             GenerateQrCode = new RegularCommand(GenerateQrCodeExecute, CanGenerateQrCodeExecute);
-            DownLoadIconCode = new SimpleCommand(DownLoadIconExecute, CanDownLoadIconExecute);
+            GenerateQrCodeImage = new SimpleCommand(GenerateQrCodeImageExecute, CanGenerateQrCodeImageExecute);
+            DownLoadIconCode = new RegularCommand(DownLoadIconExecute, CanDownLoadIconExecute);
             DownLoadQrCode = new SimpleCommand(DownLoadQrCodeExecute, CanDownLoadQrCodeExecute);
         }
     }

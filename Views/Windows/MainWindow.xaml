@@ -98,7 +98,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TabControl Background="#5CDB95">
-                    <TabItem Header="QrCode по URL" >
+                    <TabItem Header="Ссылка на URL" >
                         <StackPanel Orientation="Vertical" Margin="0 5 0 0" HorizontalAlignment="Center" Width="600" Grid.Row="0">
                             <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" Background="#379683" 
                                 FontSize="24" TextAlignment="Center" Foreground="{StaticResource TextBrush}" />
@@ -115,8 +115,6 @@
                                      Width="200" Style="{StaticResource ControllStandart}"/>
                             <TextBox x:Name="txtTheme" HorizontalAlignment="Center"
                                      Width="200" Style="{StaticResource ControllStandart}" TextAlignment="Center"/>
-                            <TextBox x:Name="txtBody" HorizontalAlignment="Center" TextWrapping="Wrap"
-                                     Width="566" Height="207" Style="{StaticResource ControllStandart}"/>
                             <TextBlock Visibility="Collapsed" x:Name="FinalString">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="mailto:{0}?subject={1}&amp;body={2}">
@@ -131,39 +129,98 @@
                                 CommandParameter="{Binding ElementName=FinalString, Path=Text}" />
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="SMS">
+                    
+                    <TabItem Header="Мэссенджеры">
+                        <TabControl Background="#5CDB95">
+                            <TabItem Header="Telegram чат">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="txtTelegram" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                    <TextBlock Visibility="Collapsed" x:Name="FinalStringTelegram">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="tg://resolve?domain={0}&amp;text={1}">
+                                                <Binding ElementName="txtTelegram" Path="Text"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <Button Command="{Binding GenerateQrCode}" Content="Сгенерировать" CommandParameter="{Binding ElementName=FinalStringTelegram, Path=Text}"/>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="WhatsApp чат">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="txtWhatsApp" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                    <TextBlock Visibility="Collapsed" x:Name="FinalStringWhatsApp">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="whatsapp://send?phone={0}&amp;text={1}">
+                                                <Binding ElementName="txtWhatsApp" Path="Text"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <Button Command="{Binding GenerateQrCode}" Content="Сгенерировать" CommandParameter="{Binding ElementName=FinalStringWhatsApp, Path=Text}"/>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="Viber чат">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="txtViber" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                    <TextBlock Visibility="Collapsed" x:Name="FinalStringViber">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="viber://chat?number={0}&amp;text={1}">
+                                                <Binding ElementName="txtViber" Path="Text"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <Button Command="{Binding GenerateQrCode}" Content="Сгенерировать" CommandParameter="{Binding ElementName=FinalStringViber, Path=Text}"/>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="Skype чат">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="txtSkype" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                    <TextBlock Visibility="Collapsed" x:Name="FinalStringSkype">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="skype:{0}?chat">
+                                                <Binding ElementName="txtSkype" Path="Text"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <Button Command="{Binding GenerateQrCode}" Content="Сгенерировать" CommandParameter="{Binding ElementName=FinalStringSkype, Path=Text}"/>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="SMS сообщение">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="txtPhoneNum" HorizontalAlignment="Center" 
+                                        Width="200" Style="{StaticResource ControllStandart}"/>
+                                    <TextBlock Visibility="Collapsed" x:Name="FinalStringSMS">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="sms:{0}?body={1}">
+                                                <Binding ElementName="txtPhoneNum" Path="Text" />
+                                                <Binding ElementName="txtSMS" Path="Text"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <Button Command="{Binding GenerateQrCode}" 
+                                        Content="Сгенерировать"
+                                        CommandParameter="{Binding ElementName=FinalStringSMS, Path=Text}" />
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
+                    </TabItem>
+                    <TabItem Header="Контакт">
                         <StackPanel Orientation="Vertical">
-                            <TextBox x:Name="txtPhoneNum" HorizontalAlignment="Center" 
-                                     Width="200" Style="{StaticResource ControllStandart}"/>
-                            <TextBox x:Name="txtSMS" HorizontalAlignment="Center" TextWrapping="Wrap" 
-                 Width="566" Height="207" Style="{StaticResource ControllStandart}"/>
-                            <TextBlock Visibility="Collapsed" x:Name="FinalStringSMS">
+                            <TextBox x:Name="txtName" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                            <TextBox x:Name="txtPhoneNumber" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                            <TextBox x:Name="txtEmail" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                            <TextBlock Visibility="Collapsed" x:Name="FinalStringvCard">
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="sms:{0}?body={1}">
-                                        <Binding ElementName="txtPhoneNum" Path="Text" />
-                                        <Binding ElementName="txtSMS" Path="Text"/>
+                                    <MultiBinding StringFormat="BEGIN:VCARD&#x0A;VERSION:3.0&#x0A;FN:{0}&#x0A;TEL:{1}&#x0A;EMAIL:{2}&#x0A;END:VCARD">
+                                        <Binding ElementName="txtName" Path="Text"/>
+                                        <Binding ElementName="txtPhoneNumber" Path="Text"/>
+                                        <Binding ElementName="txtEmail" Path="Text"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
-                            <Button Command="{Binding GenerateQrCode}" 
-                                Content="Сгенерировать"
-                                CommandParameter="{Binding ElementName=FinalStringSMS, Path=Text}" />
+                            <Button Command="{Binding GenerateQrCode}" Content="Сгенерировать" CommandParameter="{Binding ElementName=FinalStringvCard, Path=Text}"/>
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="Изображение">
-                        <StackPanel>
-                            <Border Style="{StaticResource BlueBorder}" Margin="0 5 0 0">
-                                <Border Background="{StaticResource LightGreenBrush}" >
-                                    <Image Height="350" Width="350"  Source="{Binding QrCodeIcon}"/>
-                                </Border>
-                            </Border>
-                            <Button Command="{Binding DownLoadIconCode}"
-                                Content="Изображение" Margin="0 25 0 0" />
-                            <Button Command="{Binding GenerateQrCode}" 
-                                Content="Сгенерировать"
-                                CommandParameter="{Binding ElementName=FinalStringSMS, Path=Text}" />
-                        </StackPanel>
-                    </TabItem>
+
                 </TabControl>
                 <StackPanel Grid.Row="1">
                     <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
@@ -176,7 +233,7 @@
                         </Border>
                     </Border>
                     <Button Command="{Binding DownLoadIconCode}"
-                        Content="Выбрать иконку" Margin="0 25 0 0" />
+                        Content="Выбрать иконку" Margin="0 25 0 0" CommandParameter="0"/>
                 </StackPanel>
             </Grid>
         </StackPanel>

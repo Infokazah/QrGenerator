@@ -12,22 +12,22 @@
         DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
         Title="MainWindow" Height="1080" Width="1920"
         WindowState="Maximized">
-    
+
     <Window.Background>
         <SolidColorBrush Color="#5CDB95"/>
     </Window.Background>
     <Window.Resources>
-        <con:MailtoLinkConverter x:Key="MailtoLinkConverter"/>
         <SolidColorBrush Color="#379683" x:Key="GreenBrush"/>
         <SolidColorBrush Color="#05386B" x:Key="BlueBrush"/>
         <SolidColorBrush Color="#8EE4AF" x:Key="LightGreenBrush"/>
         <SolidColorBrush Color="#EDF5E1" x:Key="TextBrush"/>
-        
+
         <Style TargetType="Control" x:Key="ControllStandart">
             <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="0 5 0 0"/>
         </Style>
         <Style TargetType="xcees:ColorPicker" x:Key="ColorPickerStyle">
             <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
@@ -41,12 +41,10 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Padding" Value="5"/>
         </Style>
-        <Style BasedOn="{StaticResource ControllStandart}" TargetType="Button"  >
-            <Style.Triggers>
-                <Trigger  Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource LightGreenBrush}"/>
-                </Trigger>
-            </Style.Triggers>
+        <Style TargetType="Button" BasedOn="{StaticResource ControllStandart}">
+            <Setter Property ="Width" Value="200" />
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="0 5 0 5"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -58,6 +56,21 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger  Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightGreenBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>
@@ -75,7 +88,7 @@
                     <Image Width="900" Height="900"  Source="{Binding QRCodeImage}"/>
                 </Border>
             </Border>
-            <Button  Width="200" Height="45" Content="Скачать QrCode" 
+            <Button Content="Скачать QrCode" 
                  Command="{Binding DownLoadQrCode}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" >
@@ -84,21 +97,27 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TabControl Background="{StaticResource LightGreenBrush}" >
-                    <TabItem Header="QrCode по URL" Background="{StaticResource GreenBrush}">
-                        <StackPanel Orientation="Vertical" Margin="0 75 0 0" HorizontalAlignment="Center" Width="600" Grid.Row="0">
+                <TabControl Background="#5CDB95">
+                    <TabItem Header="QrCode по URL" >
+                        <StackPanel Orientation="Vertical" Margin="0 5 0 0" HorizontalAlignment="Center" Width="600" Grid.Row="0">
                             <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" Background="#379683" 
                                 FontSize="24" TextAlignment="Center" Foreground="{StaticResource TextBrush}" />
                             <TextBox  Width="560" x:Name="StringBox" Style="{StaticResource ControllStandart}"
                                 Height="50" TextWrapping="Wrap" VerticalAlignment="Bottom" />
+                            <Button  Command="{Binding GenerateQrCode}" 
+                                Content="Сгенерировать"
+                                CommandParameter="{Binding ElementName=StringBox, Path=Text}" />
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Сообщение на почту">
                         <StackPanel Orientation="Vertical">
-                            <TextBox x:Name="txtMail" Text="" HorizontalAlignment="Center" Margin="0 0 0 5" Width="200"/>
-                            <TextBox x:Name="txtTheme" Text="" HorizontalAlignment="Center" Margin="0 0 0 5" Width="200"/>
-                            <TextBox x:Name="txtBody" Text="" HorizontalAlignment="Center" Margin="0 0 0 5" Width="200"/>
-                            <TextBlock Visibility="Collapsed">
+                            <TextBox x:Name="txtMail" HorizontalAlignment="Center" TextAlignment="Center"
+                                     Width="200" Style="{StaticResource ControllStandart}"/>
+                            <TextBox x:Name="txtTheme" HorizontalAlignment="Center"
+                                     Width="200" Style="{StaticResource ControllStandart}" TextAlignment="Center"/>
+                            <TextBox x:Name="txtBody" HorizontalAlignment="Center" TextWrapping="Wrap"
+                                     Width="566" Height="207" Style="{StaticResource ControllStandart}"/>
+                            <TextBlock Visibility="Collapsed" x:Name="FinalString">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="mailto:{0}?subject={1}&amp;body={2}">
                                         <Binding ElementName="txtMail" Path="Text" />
@@ -107,26 +126,57 @@
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
+                            <Button Command="{Binding GenerateQrCode}" 
+                                Content="Сгенерировать"
+                                CommandParameter="{Binding ElementName=FinalString, Path=Text}" />
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="SMS">
+                        <StackPanel Orientation="Vertical">
+                            <TextBox x:Name="txtPhoneNum" HorizontalAlignment="Center" 
+                                     Width="200" Style="{StaticResource ControllStandart}"/>
+                            <TextBox x:Name="txtSMS" HorizontalAlignment="Center" TextWrapping="Wrap" 
+                 Width="566" Height="207" Style="{StaticResource ControllStandart}"/>
+                            <TextBlock Visibility="Collapsed" x:Name="FinalStringSMS">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="sms:{0}?body={1}">
+                                        <Binding ElementName="txtPhoneNum" Path="Text" />
+                                        <Binding ElementName="txtSMS" Path="Text"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <Button Command="{Binding GenerateQrCode}" 
+                                Content="Сгенерировать"
+                                CommandParameter="{Binding ElementName=FinalStringSMS, Path=Text}" />
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Изображение">
+                        <StackPanel>
+                            <Border Style="{StaticResource BlueBorder}" Margin="0 5 0 0">
+                                <Border Background="{StaticResource LightGreenBrush}" >
+                                    <Image Height="350" Width="350"  Source="{Binding QrCodeIcon}"/>
+                                </Border>
+                            </Border>
+                            <Button Command="{Binding DownLoadIconCode}"
+                                Content="Изображение" Margin="0 25 0 0" />
+                            <Button Command="{Binding GenerateQrCode}" 
+                                Content="Сгенерировать"
+                                CommandParameter="{Binding ElementName=FinalStringSMS, Path=Text}" />
                         </StackPanel>
                     </TabItem>
                 </TabControl>
-                
                 <StackPanel Grid.Row="1">
                     <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
                         SelectedColor="{Binding BackColor}" Margin="0 75 0 0"/>
                     <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
                         SelectedColor="{Binding FrontColor}" Margin="0 10 0 0" />
-                    <Border Style="{StaticResource BlueBorder}" Margin="0 75 0 0">
+                    <Border Style="{StaticResource BlueBorder}" Margin="0 25 0 0">
                         <Border Background="{StaticResource LightGreenBrush}" >
-                            <Image Height="400" Width="400"  Source="{Binding QrCodeIcon}"/>
+                            <Image Height="175" Width="175"  Source="{Binding QrCodeIcon}"/>
                         </Border>
                     </Border>
-                    <Button Width="200"  Height="40" Command="{Binding DownLoadIconCode}"
+                    <Button Command="{Binding DownLoadIconCode}"
                         Content="Выбрать иконку" Margin="0 25 0 0" />
-                    <Button Width="200"  Height="40" 
-                        Command="{Binding GenerateQrCode}" 
-                        Margin="0 50 0 0" Content="Сгенерировать"
-                        CommandParameter="{Binding ElementName=StringBox, Path=Text}" />
                 </StackPanel>
             </Grid>
         </StackPanel>

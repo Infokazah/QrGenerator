@@ -16,10 +16,21 @@ namespace QrGenerator.ViewModels
     internal class MainWindowViewModel : ViewModelBase
     {
         private ImageSaver _imageSaver;
-        private ImageSource _qrCodeImage;
+        
         private QrCodeGeneratorService _qrCodeGeneratorService;
         private ImageSource _qrCodeIcon;
 
+        private ImageSource _qrCodeImage;
+        public ImageSource QRCodeImage
+        {
+            get => _qrCodeImage;
+
+            set
+            {
+                _qrCodeImage = value;
+                OnPropertyChanged(nameof(QRCodeImage));
+            }
+        }
         public ImageSource QrCodeIcon
         {
             get => _qrCodeIcon;
@@ -27,6 +38,19 @@ namespace QrGenerator.ViewModels
             set
             {
                 _qrCodeIcon = value;
+                OnPropertyChanged(nameof(QrCodeIcon));
+            }
+        }
+
+        private ImageSource _imageToCode;
+
+        public ImageSource ImageToCode
+        {
+            get => _imageToCode;
+
+            set
+            {
+                _imageToCode = value;
                 OnPropertyChanged(nameof(QrCodeIcon));
             }
         }
@@ -57,16 +81,6 @@ namespace QrGenerator.ViewModels
             {
                 _frontColor = value;
                 OnPropertyChanged(nameof(FrontColor));
-            }
-        }
-        public ImageSource QRCodeImage
-        {
-            get => _qrCodeImage;
-
-            set 
-            {
-                _qrCodeImage = value;
-                OnPropertyChanged(nameof(QRCodeImage));
             }
         }
         public RegularCommand GenerateQrCode { get; }

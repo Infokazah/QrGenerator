@@ -66,11 +66,44 @@
             <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
 
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border"
+                                BorderBrush="Transparent"
+                                BorderThickness="1,1,1,0"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="12,2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,1"/>
+                                <Setter Property="Background" Value="{StaticResource BlueBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource BlueBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource ControllStandart}">
+            <Setter Property="Width" Value="560"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="32"/>
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Vertical"/>
+            <Setter Property="Margin" Value="0 5 0 0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="600"/>
         </Style>
     </Window.Resources>
     <Grid>
@@ -82,7 +115,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <GridSplitter Background="{StaticResource BlueBrush}" VerticalAlignment="Stretch" Grid.Column="0" Width="5"/>
-        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+        <StackPanel Orientation="Vertical" Width="1000" Grid.Column="0" Grid.Row="0" Margin="0,5,0,0">
             <Border Style="{StaticResource BlueBorder}" Margin="0 20 0 20">
                 <Border Background="{StaticResource LightGreenBrush}">
                     <Image Width="900" Height="900"  Source="{Binding QRCodeImage}"/>
@@ -91,36 +124,32 @@
             <Button Content="Скачать QrCode" 
                  Command="{Binding DownLoadQrCode}"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" >
+        <StackPanel Grid.Row="0" Grid.Column="1" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TabControl Background="#5CDB95">
+                <TabControl Background="{StaticResource LightGreenBrush}">
                     <TabItem Header="Ссылка на URL" >
-                        <StackPanel Orientation="Vertical" Margin="0 5 0 0" HorizontalAlignment="Center" Width="600" Grid.Row="0">
+                        <StackPanel Grid.Row="0">
                             <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" Background="#379683" 
                                 FontSize="24" TextAlignment="Center" Foreground="{StaticResource TextBrush}" />
-                            <TextBox  Width="560" x:Name="StringBox" Style="{StaticResource ControllStandart}"
-                                Height="50" TextWrapping="Wrap" VerticalAlignment="Bottom" />
+                            <TextBox  x:Name="StringBox"/>
                             <Button  Command="{Binding GenerateQrCode}" 
                                 Content="Сгенерировать"
                                 CommandParameter="{Binding ElementName=StringBox, Path=Text}" />
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Сообщение на почту">
-                        <StackPanel Orientation="Vertical">
-                            <TextBox x:Name="txtMail" HorizontalAlignment="Center" TextAlignment="Center"
-                                     Width="200" Style="{StaticResource ControllStandart}"/>
-                            <TextBox x:Name="txtTheme" HorizontalAlignment="Center"
-                                     Width="200" Style="{StaticResource ControllStandart}" TextAlignment="Center"/>
+                        <StackPanel>
+                            <TextBox x:Name="txtMail" ToolTip="Электронная почта"/>
+                            <TextBox x:Name="txtTheme" TextAlignment="Center" ToolTip="Тема"/>
                             <TextBlock Visibility="Collapsed" x:Name="FinalString">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="mailto:{0}?subject={1}&amp;body={2}">
                                         <Binding ElementName="txtMail" Path="Text" />
                                         <Binding ElementName="txtTheme" Path="Text"/>
-                                        <Binding ElementName="txtBody" Path="Text"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -129,12 +158,12 @@
                                 CommandParameter="{Binding ElementName=FinalString, Path=Text}" />
                         </StackPanel>
                     </TabItem>
-                    
+
                     <TabItem Header="Мэссенджеры">
-                        <TabControl Background="#5CDB95">
+                        <TabControl Background="{StaticResource LightGreenBrush}">
                             <TabItem Header="Telegram чат">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="txtTelegram" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                <StackPanel >
+                                    <TextBox x:Name="txtTelegram" ToolTip="Имя пользователя"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringTelegram">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="tg://resolve?domain={0}&amp;text={1}">
@@ -146,11 +175,11 @@
                                 </StackPanel>
                             </TabItem>
                             <TabItem Header="WhatsApp чат">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="txtWhatsApp" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
-                                    <TextBlock Visibility="Collapsed" x:Name="FinalStringWhatsApp">
+                                <StackPanel >
+                                    <TextBox x:Name="txtWhatsApp" ToolTip="Номер телефона"/>
+                                    <TextBlock  x:Name="FinalStringWhatsApp">
                                         <TextBlock.Text>
-                                            <MultiBinding StringFormat="whatsapp://send?phone={0}&amp;text={1}">
+                                            <MultiBinding StringFormat="whatsapp://send?phone={0}&amp;text=">
                                                 <Binding ElementName="txtWhatsApp" Path="Text"/>
                                             </MultiBinding>
                                         </TextBlock.Text>
@@ -159,8 +188,8 @@
                                 </StackPanel>
                             </TabItem>
                             <TabItem Header="Viber чат">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="txtViber" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                <StackPanel >
+                                    <TextBox x:Name="txtViber" ToolTip="Номер телефона"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringViber">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="viber://chat?number={0}&amp;text={1}">
@@ -172,8 +201,8 @@
                                 </StackPanel>
                             </TabItem>
                             <TabItem Header="Skype чат">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="txtSkype" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                                <StackPanel>
+                                    <TextBox x:Name="txtSkype" ToolTip="Имя скайп"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringSkype">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="skype:{0}?chat">
@@ -185,14 +214,12 @@
                                 </StackPanel>
                             </TabItem>
                             <TabItem Header="SMS сообщение">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="txtPhoneNum" HorizontalAlignment="Center" 
-                                        Width="200" Style="{StaticResource ControllStandart}"/>
+                                <StackPanel>
+                                    <TextBox x:Name="txtPhoneNum"  ToolTip="Номер телефона"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringSMS">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="sms:{0}?body={1}">
                                                 <Binding ElementName="txtPhoneNum" Path="Text" />
-                                                <Binding ElementName="txtSMS" Path="Text"/>
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
@@ -204,10 +231,10 @@
                         </TabControl>
                     </TabItem>
                     <TabItem Header="Контакт">
-                        <StackPanel Orientation="Vertical">
-                            <TextBox x:Name="txtName" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
-                            <TextBox x:Name="txtPhoneNumber" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
-                            <TextBox x:Name="txtEmail" HorizontalAlignment="Center" Width="200" Style="{StaticResource ControllStandart}"/>
+                        <StackPanel>
+                            <TextBox x:Name="txtName" ToolTip="Имя контакта"/>
+                            <TextBox x:Name="txtPhoneNumber" ToolTip="Номер телефона"/>
+                            <TextBox x:Name="txtEmail" ToolTip="Электронная почта"/>
                             <TextBlock Visibility="Collapsed" x:Name="FinalStringvCard">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="BEGIN:VCARD&#x0A;VERSION:3.0&#x0A;FN:{0}&#x0A;TEL:{1}&#x0A;EMAIL:{2}&#x0A;END:VCARD">

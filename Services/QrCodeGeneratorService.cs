@@ -22,7 +22,7 @@ namespace QrGenerator.Services
         {
             QRCodeData qrCodeData = _qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap QRCodeBitMap = qrCode.GetGraphic(100, GlobalConverter.ConvertToDrawingColor(back), GlobalConverter.ConvertToDrawingColor(front), true);
+            Bitmap QRCodeBitMap = qrCode.GetGraphic(100, GlobalConverter.ConvertToDrawingColor(front), GlobalConverter.ConvertToDrawingColor(back), true);
 
             ImageSource QRCodeImage = Imaging.CreateBitmapSourceFromHBitmap(QRCodeBitMap.GetHbitmap(),
                                                                              IntPtr.Zero, Int32Rect.Empty,

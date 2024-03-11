@@ -7,6 +7,7 @@
         xmlns:vm="clr-namespace:QrGenerator.ViewModels"
         xmlns:xcees="http://schemas.xceed.com/wpf/xaml/toolkit" 
         xmlns:con="clr-namespace:QrGenerator.infrastructure.Converter"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
         DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
@@ -17,6 +18,9 @@
         <SolidColorBrush Color="#5CDB95"/>
     </Window.Background>
     <Window.Resources>
+        <FontFamily x:Key="FontAwesomeRegular">/Fonts/otfs/Font Awesome 5 Free-Regular-400.otf#Font Awesome 5 Free</FontFamily>
+
+
         <SolidColorBrush Color="#379683" x:Key="GreenBrush"/>
         <SolidColorBrush Color="#05386B" x:Key="BlueBrush"/>
         <SolidColorBrush Color="#8EE4AF" x:Key="LightGreenBrush"/>
@@ -105,6 +109,14 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Width" Value="600"/>
         </Style>
+        <Style TargetType="TextBlock" x:Key="StandartTextBlock">
+            <Setter Property="Width" Value="560"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -133,8 +145,7 @@
                 <TabControl Background="{StaticResource LightGreenBrush}">
                     <TabItem Header="Ссылка на URL" >
                         <StackPanel Grid.Row="0">
-                            <TextBlock Width="560" Height="40" Text="Ссылка для QrCode" Background="#379683" 
-                                FontSize="24" TextAlignment="Center" Foreground="{StaticResource TextBrush}" />
+                            <TextBlock Text="Ссылка для QrCode" Style="{StaticResource StandartTextBlock}" />
                             <TextBox  x:Name="StringBox"/>
                             <Button  Command="{Binding GenerateQrCode}" 
                                 Content="Сгенерировать"
@@ -143,6 +154,8 @@
                     </TabItem>
                     <TabItem Header="Сообщение на почту">
                         <StackPanel>
+                            <TextBlock Width="560" Height="40" Text="Электронная почта / Тема письма" Background="{StaticResource GreenBrush}" 
+                                FontSize="24" TextAlignment="Center" Foreground="{StaticResource TextBrush}" />
                             <TextBox x:Name="txtMail" ToolTip="Электронная почта"/>
                             <TextBox x:Name="txtTheme" TextAlignment="Center" ToolTip="Тема"/>
                             <TextBlock Visibility="Collapsed" x:Name="FinalString">
@@ -163,10 +176,11 @@
                         <TabControl Background="{StaticResource LightGreenBrush}">
                             <TabItem Header="Telegram чат">
                                 <StackPanel >
+                                    <TextBlock Text="Имя пользователя " Style="{StaticResource StandartTextBlock}"/>
                                     <TextBox x:Name="txtTelegram" ToolTip="Имя пользователя"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringTelegram">
                                         <TextBlock.Text>
-                                            <MultiBinding StringFormat="tg://resolve?domain={0}&amp;text={1}">
+                                            <MultiBinding StringFormat="tg://resolve?domain={0}&amp;text=">
                                                 <Binding ElementName="txtTelegram" Path="Text"/>
                                             </MultiBinding>
                                         </TextBlock.Text>
@@ -176,11 +190,14 @@
                             </TabItem>
                             <TabItem Header="WhatsApp чат">
                                 <StackPanel >
+                                    <TextBlock Text="Номер телефона / Сообщение" Style="{StaticResource StandartTextBlock}"/>
                                     <TextBox x:Name="txtWhatsApp" ToolTip="Номер телефона"/>
-                                    <TextBlock  x:Name="FinalStringWhatsApp">
+                                    <TextBox x:Name="txtWhatsAppbody" ToolTip="текс сообщения" Height="175" TextWrapping="Wrap"/>
+                                    <TextBlock  x:Name="FinalStringWhatsApp" Visibility="Collapsed">
                                         <TextBlock.Text>
-                                            <MultiBinding StringFormat="whatsapp://send?phone={0}&amp;text=">
+                                            <MultiBinding StringFormat="whatsapp://send?phone={0}&amp;text={1}">
                                                 <Binding ElementName="txtWhatsApp" Path="Text"/>
+                                                <Binding ElementName="txtWhatsAppbody" Path="Text"/>
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
@@ -189,11 +206,14 @@
                             </TabItem>
                             <TabItem Header="Viber чат">
                                 <StackPanel >
+                                    <TextBlock Text="Номер телефона / Сообщение" Style="{StaticResource StandartTextBlock}" />
                                     <TextBox x:Name="txtViber" ToolTip="Номер телефона"/>
+                                    <TextBox x:Name="txtViberbody" ToolTip="текс сообщения" Height="175" TextWrapping="Wrap"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringViber">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="viber://chat?number={0}&amp;text={1}">
                                                 <Binding ElementName="txtViber" Path="Text"/>
+                                                <Binding ElementName="txtViberbody" Path="Text"/>
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
@@ -202,7 +222,9 @@
                             </TabItem>
                             <TabItem Header="Skype чат">
                                 <StackPanel>
+                                    <TextBlock Text="Имя пользователя" Style="{StaticResource StandartTextBlock}" />
                                     <TextBox x:Name="txtSkype" ToolTip="Имя скайп"/>
+         
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringSkype">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="skype:{0}?chat">
@@ -215,11 +237,14 @@
                             </TabItem>
                             <TabItem Header="SMS сообщение">
                                 <StackPanel>
+                                    <TextBlock  Text="Номер телефона / Сообщение" Style="{StaticResource StandartTextBlock}" />
                                     <TextBox x:Name="txtPhoneNum"  ToolTip="Номер телефона"/>
+                                    <TextBox x:Name="txtPhoneNumbody"  ToolTip="Тело сообщение" Height="175" TextWrapping="Wrap"/>
                                     <TextBlock Visibility="Collapsed" x:Name="FinalStringSMS">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="sms:{0}?body={1}">
                                                 <Binding ElementName="txtPhoneNum" Path="Text" />
+                                                <Binding ElementName="txtPhoneNumbody" Path="Text" />
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
@@ -232,6 +257,7 @@
                     </TabItem>
                     <TabItem Header="Контакт">
                         <StackPanel>
+                            <TextBlock Text="Имя / Номер телефон / Электронная почта" Style="{StaticResource StandartTextBlock}" />
                             <TextBox x:Name="txtName" ToolTip="Имя контакта"/>
                             <TextBox x:Name="txtPhoneNumber" ToolTip="Номер телефона"/>
                             <TextBox x:Name="txtEmail" ToolTip="Электронная почта"/>
@@ -250,17 +276,26 @@
 
                 </TabControl>
                 <StackPanel Grid.Row="1">
+                    <TextBlock  Text="Цвет заднего фона" Style="{StaticResource StandartTextBlock}" Margin="0 75 0 0" Width="400"/>
                     <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
-                        SelectedColor="{Binding BackColor}" Margin="0 75 0 0"/>
+                        SelectedColor="{Binding BackColor}"/>
+                    <TextBlock  Text="Цвет переднего фона" Style="{StaticResource StandartTextBlock}" Margin="0 10 0 0" Width="400"/>
                     <xcees:ColorPicker Width="400" Height="40" Style="{StaticResource ColorPickerStyle}"
-                        SelectedColor="{Binding FrontColor}" Margin="0 10 0 0" />
+                        SelectedColor="{Binding FrontColor}"/>
                     <Border Style="{StaticResource BlueBorder}" Margin="0 25 0 0">
                         <Border Background="{StaticResource LightGreenBrush}" >
                             <Image Height="175" Width="175"  Source="{Binding QrCodeIcon}"/>
                         </Border>
                     </Border>
-                    <Button Command="{Binding DownLoadIconCode}"
-                        Content="Выбрать иконку" Margin="0 25 0 0" CommandParameter="0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0 25 0 0" >
+                        <Button Command="{Binding DownLoadIconCode}"
+                             Content="Загрузить иконку" CommandParameter="0" Margin="180 0 0 0"/>
+                        <Button Command="{Binding RemoveIcon}" Height="40" Width="40" Margin="5 0 0 0">
+                            <Button.Content>
+                                <fa:ImageAwesome Height="40" Icon="Solid_TimesCircle"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </StackPanel>
